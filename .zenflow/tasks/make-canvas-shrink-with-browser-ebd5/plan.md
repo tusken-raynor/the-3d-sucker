@@ -7,7 +7,8 @@
 
 ## Workflow Steps
 
-### [ ] Step: Investigation and Planning
+### [x] Step: Investigation and Planning
+<!-- chat-id: 792c279d-8ece-42ca-84dc-a9495a35a30d -->
 
 Analyze the bug report and design a solution.
 
