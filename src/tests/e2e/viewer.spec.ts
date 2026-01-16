@@ -207,6 +207,52 @@ test.describe('3D Model Viewer', () => {
     expect(aspectRatio).toBeCloseTo(4 / 3, 1);
   });
 
+  test('should resize canvas when viewport expands after shrinking', async ({
+    page,
+  }) => {
+    const canvas = page.locator('#render-canvas');
+
+    // Start with wide viewport
+    await page.setViewportSize({ width: 1000, height: 800 });
+    await expect(canvas).toBeVisible();
+
+    // Get initial dimensions (should be 800px wide at 1000px viewport)
+    const initialBox = await canvas.boundingBox();
+    expect(initialBox).not.toBeNull();
+    if (!initialBox) return;
+
+    const initialWidth = initialBox.width;
+    expect(initialWidth).toBeCloseTo(800, -1); // Should be ~800px
+
+    // Shrink viewport below 800px
+    await page.setViewportSize({ width: 500, height: 600 });
+    await page.waitForTimeout(150); // Wait for debounced resize
+
+    // Canvas should have shrunk
+    const shrunkBox = await canvas.boundingBox();
+    expect(shrunkBox).not.toBeNull();
+    if (!shrunkBox) return;
+
+    expect(shrunkBox.width).toBeLessThan(initialWidth);
+
+    // Now expand viewport back to 1000px
+    await page.setViewportSize({ width: 1000, height: 800 });
+    await page.waitForTimeout(150); // Wait for debounced resize
+
+    // Canvas should grow back to ~800px (the bug was it stayed small)
+    const expandedBox = await canvas.boundingBox();
+    expect(expandedBox).not.toBeNull();
+    if (!expandedBox) return;
+
+    // Key assertion: canvas should grow back to near original size
+    expect(expandedBox.width).toBeGreaterThan(shrunkBox.width);
+    expect(expandedBox.width).toBeCloseTo(initialWidth, -1); // Should be ~800px again
+
+    // Verify aspect ratio is maintained
+    const aspectRatio = expandedBox.width / expandedBox.height;
+    expect(aspectRatio).toBeCloseTo(4 / 3, 1);
+  });
+
   test('should maintain canvas rendering after resize', async ({ page }) => {
     const canvas = page.locator('#render-canvas');
     const objInput = page.locator('#obj-input');

@@ -42,6 +42,14 @@ function init(): void {
     return;
   }
 
+  const wrapper = document.querySelector(
+    '.renderer__canvas-wrapper'
+  ) as HTMLElement;
+  if (!wrapper) {
+    console.error('Canvas wrapper not found');
+    return;
+  }
+
   const ctx = canvas.getContext('2d');
   if (!ctx) {
     console.error('Could not get 2D context');
@@ -51,9 +59,9 @@ function init(): void {
   let framebuffer = createFramebuffer(BASE_WIDTH, BASE_HEIGHT);
   let scene = createScene();
 
-  // Calculate canvas dimensions based on displayed size
+  // Calculate canvas dimensions based on wrapper's displayed size
   function getCanvasDimensions(): { width: number; height: number } {
-    const displayedWidth = canvas.clientWidth;
+    const displayedWidth = wrapper.clientWidth;
     const width = Math.max(MIN_WIDTH, Math.min(BASE_WIDTH, displayedWidth));
     const height = Math.round(width / ASPECT_RATIO);
     return { width, height };
@@ -85,12 +93,11 @@ function init(): void {
     }, RESIZE_DEBOUNCE_MS);
   }
 
-  // Observe canvas size changes
+  // Observe wrapper size changes (not canvas, to avoid circular dependency)
   const resizeObserver = new ResizeObserver(() => {
     debouncedUpdateCanvasSize();
   });
-  resizeObserver.observe(canvas);
-
+  resizeObserver.observe(wrapper);
 
   // Set up input handling for camera controls
   const { cleanup: cleanupInput } = createInputHandler(canvas, {
