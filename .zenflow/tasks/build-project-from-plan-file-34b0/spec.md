@@ -14,6 +14,45 @@
 - HTML canvas will be rendered to `#app` div in `index.html`
 - tsconfig.json already has strict mode, ES2022 target, DOM types
 
+### Path Alias Configuration
+
+Add `@/` path alias for clean imports. This requires changes to both `tsconfig.json` and `vite.config.ts`.
+
+**tsconfig.json additions:**
+```json
+{
+  "compilerOptions": {
+    "baseUrl": ".",
+    "paths": {
+      "@/*": ["src/*"]
+    }
+  }
+}
+```
+
+**vite.config.ts** (create this file):
+```typescript
+import { defineConfig } from 'vite';
+import path from 'path';
+
+export default defineConfig({
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, './src'),
+    },
+  },
+});
+```
+
+**Usage example:**
+```typescript
+// Instead of relative imports:
+import { vec3 } from '../../js/math';
+
+// Use alias imports:
+import { vec3 } from '@/js/math';
+```
+
 ### Dependencies to Add
 - **vitest**: Unit and integration testing
 - **@vitest/coverage-v8**: Coverage reporting
@@ -500,16 +539,27 @@ class RenderError extends AppError { }
 {
   "scripts": {
     "test": "npm run test:unit && npm run test:integration && npm run test:e2e",
-    "test:unit": "vitest run 'src/js/**/*.test.ts'",
+    "test:unit": "vitest run src/js",
     "test:integration": "vitest run src/tests/integration",
     "test:e2e": "playwright test src/tests/e2e",
-    "test:coverage": "vitest run --coverage 'src/js/**/*.test.ts'",
-    "lint": "tsc --noEmit",
-    "format": "prettier --write 'src/**/*.ts'",
-    "validate": "npm run lint && npm run test"
+    "test:coverage": "vitest run --coverage src/js",
+    "type-check": "tsc --noEmit",
+    "format": "prettier --write src",
+    "format:check": "prettier --check src",
+    "validate": "npm run format:check && npm run type-check && npm run test"
   }
 }
 ```
+
+**Script explanations:**
+- `test:unit`: Runs vitest on the `src/js` directory (vitest finds `*.test.ts` files automatically)
+- `test:integration`: Runs integration tests in `src/tests/integration`
+- `test:e2e`: Runs Playwright E2E tests
+- `test:coverage`: Runs unit tests with coverage reporting
+- `type-check`: Runs TypeScript compiler to check for type errors (no emit)
+- `format`: Formats all source files with Prettier
+- `format:check`: Checks formatting without modifying files (for CI)
+- `validate`: Full validation pipeline (format check, type check, all tests)
 
 ### Test Coverage Goals
 - **Math module**: 100% coverage (critical foundation)
@@ -603,7 +653,8 @@ None - pure software rendering
     "vitest": "^3.0.0",
     "@vitest/coverage-v8": "^3.0.0",
     "playwright": "^1.50.0",
-    "@playwright/test": "^1.50.0"
+    "@playwright/test": "^1.50.0",
+    "prettier": "^3.4.0"
   }
 }
 ```
