@@ -31,6 +31,7 @@ body {
   flex-direction: column;
   align-items: center;
   padding: 1rem;
+  width: 100%;
 }
 
 .renderer {
@@ -38,14 +39,21 @@ body {
   flex-direction: column;
   align-items: center;
   gap: 1rem;
+  width: 100%;
+  max-width: 800px;
+}
+
+.renderer__canvas-wrapper {
+  width: 100%;
+  max-width: 800px;
 }
 
 .renderer canvas {
+  display: block;
+  width: 100%;
   border: 2px solid var(--color-primary);
   border-radius: 4px;
   background-color: #000;
-  max-width: 100%;
-  height: auto;
 }
 
 .controls {

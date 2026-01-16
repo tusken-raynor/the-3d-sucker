@@ -116,3 +116,37 @@ Add a regression test that:
 2. Expands to 1000px viewport width
 3. Verifies canvas width increases (should be 800px or close to it)
 4. Verifies aspect ratio is maintained
+
+---
+
+## Implementation Notes
+
+### Changes Made
+
+1. **index.html** - Added wrapper div around canvas:
+   ```html
+   <div class="renderer__canvas-wrapper">
+     <canvas id="render-canvas" width="800" height="600"></canvas>
+   </div>
+   ```
+
+2. **src/style.css** - Three CSS changes:
+   - Added `width: 100%` to `#app` to ensure it fills viewport
+   - Added `width: 100%` and `max-width: 800px` to `.renderer`
+   - Added `.renderer__canvas-wrapper` with `width: 100%` and `max-width: 800px`
+   - Changed canvas from `max-width: 100%` to `width: 100%` and added `display: block`
+
+3. **src/main.ts** - Two changes:
+   - Query the wrapper element: `document.querySelector('.renderer__canvas-wrapper')`
+   - Read `wrapper.clientWidth` instead of `canvas.clientWidth` in `getCanvasDimensions()`
+   - Observe wrapper instead of canvas: `resizeObserver.observe(wrapper)`
+
+### Test Results
+
+- Added regression test: "should resize canvas when viewport expands after shrinking"
+- Confirmed test fails before fix (canvas stayed at 468px after shrinking)
+- Confirmed test passes after fix (canvas grows back to ~800px)
+- All 13 e2e tests pass
+- All 197 unit tests pass
+- All 30 integration tests pass
+- Full validation (`npm run validate`) passes
