@@ -137,7 +137,7 @@ describe('createInputHandler', () => {
       new MouseEvent('mousemove', { clientX: 110, clientY: 120 })
     );
 
-    expect(callbacks.onOrbit).toHaveBeenCalledWith(10, 20);
+    expect(callbacks.onOrbit).toHaveBeenCalledWith(-10, 20);
   });
 
   it('should apply sensitivity to orbit deltas', () => {
@@ -151,7 +151,7 @@ describe('createInputHandler', () => {
       new MouseEvent('mousemove', { clientX: 200, clientY: 200 })
     );
 
-    expect(callbacks.onOrbit).toHaveBeenCalledWith(1, 1);
+    expect(callbacks.onOrbit).toHaveBeenCalledWith(-1, 1);
   });
 
   it('should call onZoom on wheel event', () => {
