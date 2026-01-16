@@ -86,3 +86,4 @@ src/js/my-module/
 - [ ] Test goals replaced with actual test documentation (if applicable)
 - [ ] No TypeScript errors (run `npm run type-check`)
 - [ ] No ESLint errors (run `npm run lint`)
+- [ ] When a task is implemented and the worktree branch is ready to be merged, always automatically rebase into the main branch so the merge can happen seamlessly
