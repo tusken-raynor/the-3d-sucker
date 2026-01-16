@@ -1,0 +1,4 @@
+# Invalid OBJ file with bad vertex data
+v invalid data here
+v 1 2 3
+f 1 2 3
