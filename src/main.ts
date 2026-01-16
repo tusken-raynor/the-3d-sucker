@@ -18,6 +18,7 @@ const BASE_WIDTH = 800;
 const BASE_HEIGHT = 600;
 const MIN_WIDTH = 200;
 const ASPECT_RATIO = BASE_WIDTH / BASE_HEIGHT;
+const RESIZE_DEBOUNCE_MS = 50;
 
 function setStatus(
   message: string,
@@ -72,9 +73,21 @@ function init(): void {
   // Set initial size
   updateCanvasSize();
 
+  // Debounced resize handler to avoid excessive framebuffer recreations
+  let resizeTimeout: ReturnType<typeof setTimeout> | null = null;
+  function debouncedUpdateCanvasSize(): void {
+    if (resizeTimeout !== null) {
+      clearTimeout(resizeTimeout);
+    }
+    resizeTimeout = setTimeout(() => {
+      updateCanvasSize();
+      resizeTimeout = null;
+    }, RESIZE_DEBOUNCE_MS);
+  }
+
   // Observe canvas size changes
   const resizeObserver = new ResizeObserver(() => {
-    updateCanvasSize();
+    debouncedUpdateCanvasSize();
   });
   resizeObserver.observe(canvas);
 
@@ -174,6 +187,9 @@ function init(): void {
     loop.stop();
     cleanupInput();
     resizeObserver.disconnect();
+    if (resizeTimeout !== null) {
+      clearTimeout(resizeTimeout);
+    }
   });
 }
 

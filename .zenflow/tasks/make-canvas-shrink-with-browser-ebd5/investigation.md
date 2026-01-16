@@ -118,18 +118,19 @@ resizeObserver.observe(canvas);
   - Updates canvas `width`/`height` attributes when displayed size changes
   - Recreates framebuffer with new dimensions
 - Added `ResizeObserver` to monitor canvas and call `updateCanvasSize()` on changes
+- Added 50ms debounce to resize handler to avoid excessive framebuffer recreations
 
-**`src/main.ts` (line 176)**:
+**`src/main.ts` (line 185-192)**:
 - Added `resizeObserver.disconnect()` to cleanup on page unload
+- Added cleanup for debounce timeout
+
+**`src/tests/e2e/viewer.spec.ts` (lines 176-246)**:
+- Added regression test `should resize canvas when viewport shrinks below 800px`
+- Added regression test `should maintain canvas rendering after resize`
 
 ### Test Results
 
-All existing tests pass:
+All tests pass:
 - 197 unit tests passed
 - 30 integration tests passed
-- 10 e2e tests passed
-
-Manual verification required:
-- Resize browser window below 800px and verify canvas shrinks proportionally
-- Verify 3D rendering continues to work at smaller sizes
-- Verify aspect ratio remains 4:3 during resize
+- 12 e2e tests passed (2 new regression tests added)

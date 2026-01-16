@@ -173,6 +173,78 @@ test.describe('3D Model Viewer', () => {
     await expect(status).toContainText('Loaded', { timeout: 5000 });
   });
 
+  test('should resize canvas when viewport shrinks below 800px', async ({
+    page,
+  }) => {
+    const canvas = page.locator('#render-canvas');
+
+    // Start with wide viewport
+    await page.setViewportSize({ width: 1000, height: 800 });
+    await expect(canvas).toBeVisible();
+
+    // Get initial dimensions
+    const initialBox = await canvas.boundingBox();
+    expect(initialBox).not.toBeNull();
+    if (!initialBox) return;
+
+    const initialWidth = initialBox.width;
+
+    // Shrink viewport below 800px
+    await page.setViewportSize({ width: 500, height: 600 });
+
+    // Wait for debounced resize to take effect
+    await page.waitForTimeout(150);
+
+    // Canvas should have shrunk
+    const shrunkBox = await canvas.boundingBox();
+    expect(shrunkBox).not.toBeNull();
+    if (!shrunkBox) return;
+
+    expect(shrunkBox.width).toBeLessThan(initialWidth);
+
+    // Verify aspect ratio is maintained (4:3 = 1.333...)
+    const aspectRatio = shrunkBox.width / shrunkBox.height;
+    expect(aspectRatio).toBeCloseTo(4 / 3, 1);
+  });
+
+  test('should maintain canvas rendering after resize', async ({ page }) => {
+    const canvas = page.locator('#render-canvas');
+    const objInput = page.locator('#obj-input');
+    const status = page.locator('#status');
+
+    // Load a model first
+    await objInput.setInputFiles(path.join(fixturesDir, 'cube.obj'));
+    await expect(status).toContainText('Loaded: cube.obj', { timeout: 5000 });
+
+    // Resize viewport
+    await page.setViewportSize({ width: 400, height: 500 });
+    await page.waitForTimeout(150); // Wait for debounced resize
+
+    // Canvas should still be visible and functional
+    await expect(canvas).toBeVisible();
+
+    // Verify canvas has updated width attribute (internal resolution)
+    const canvasWidth = await canvas.evaluate(
+      (el: HTMLCanvasElement) => el.width
+    );
+    expect(canvasWidth).toBeLessThanOrEqual(400);
+    expect(canvasWidth).toBeGreaterThanOrEqual(200); // MIN_WIDTH
+
+    // Verify we can still interact with the camera
+    const box = await canvas.boundingBox();
+    if (box) {
+      const centerX = box.x + box.width / 2;
+      const centerY = box.y + box.height / 2;
+      await page.mouse.move(centerX, centerY);
+      await page.mouse.down();
+      await page.mouse.move(centerX + 50, centerY, { steps: 5 });
+      await page.mouse.up();
+    }
+
+    // Application should still be responsive
+    await expect(status).toContainText('Loaded');
+  });
+
   test('complete workflow: load model, interact with camera', async ({
     page,
   }) => {
