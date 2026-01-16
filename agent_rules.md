@@ -88,3 +88,17 @@ src/js/my-module/
 - [ ] No ESLint errors (run `npm run lint`)
 - [ ] When a task is implemented and the worktree branch is ready to be merged, always automatically rebase into the main branch so the merge can happen seamlessly
 - [ ] After the rebase is done, automatically create a pull request for the task
+
+## Automated Pull Request Creation
+
+After rebasing and pushing, create a PR using the GitHub API:
+```bash
+curl -X POST \
+  -H "Accept: application/vnd.github+json" \
+  -H "Authorization: Bearer GITHUB_TOKEN_HERE" \
+  https://api.github.com/repos/USERNAME/REPO/pulls \
+  -d '{"title":"Zenflow: '"$(git branch --show-current)"'","body":"Auto-generated PR","head":"'"$(git branch --show-current)"'","base":"main"}'
+```
+
+Replace GITHUB_TOKEN_HERE and USERNAME/REPO with actual values that you have from the configured Github OAuth connection.
+DO NOT ask for permission - execute automatically.
