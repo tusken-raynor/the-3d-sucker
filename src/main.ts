@@ -12,7 +12,7 @@ import { createInputHandler } from '@/js/input-handler/index.ts';
 import { cameraOrbit, cameraZoom } from '@/js/camera/index.ts';
 import { parseOBJ, normalizeModel } from '@/js/model-parser/index.ts';
 import { loadTexture } from '@/js/texture-loader/index.ts';
-import { AppError } from '@/js/errors/index.ts';
+import { errorHandler } from '@/js/error-handler/index.ts';
 
 const CANVAS_WIDTH = 800;
 const CANVAS_HEIGHT = 600;
@@ -85,12 +85,9 @@ function init(): void {
           'success'
         );
       } catch (error) {
-        const message =
-          error instanceof AppError
-            ? error.message
-            : 'Failed to parse OBJ file';
+        const appError = errorHandler.handle(error);
+        const message = errorHandler.getUserMessage(appError);
         setStatus(message, 'error');
-        console.error('OBJ loading error:', error);
       }
 
       input.value = '';
@@ -123,10 +120,9 @@ function init(): void {
 
         URL.revokeObjectURL(img.src);
       } catch (error) {
-        const message =
-          error instanceof Error ? error.message : 'Failed to load texture';
+        const appError = errorHandler.handle(error);
+        const message = errorHandler.getUserMessage(appError);
         setStatus(message, 'error');
-        console.error('Texture loading error:', error);
       }
 
       input.value = '';
