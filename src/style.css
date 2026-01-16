@@ -86,7 +86,7 @@ body {
 }
 
 .controls__file-input:hover {
-  background-color: #51cf66;
+  background-color: #f0a500;
 }
 
 .controls__file-input input[type='file'] {
