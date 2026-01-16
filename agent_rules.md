@@ -87,3 +87,4 @@ src/js/my-module/
 - [ ] No TypeScript errors (run `npm run type-check`)
 - [ ] No ESLint errors (run `npm run lint`)
 - [ ] When a task is implemented and the worktree branch is ready to be merged, always automatically rebase into the main branch so the merge can happen seamlessly
+- [ ] After the rebase is done, automatically create a pull request for the task
