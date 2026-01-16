@@ -14,8 +14,10 @@ import { parseOBJ, normalizeModel } from '@/js/model-parser/index.ts';
 import { loadTexture } from '@/js/texture-loader/index.ts';
 import { errorHandler } from '@/js/error-handler/index.ts';
 
-const CANVAS_WIDTH = 800;
-const CANVAS_HEIGHT = 600;
+const BASE_WIDTH = 800;
+const BASE_HEIGHT = 600;
+const MIN_WIDTH = 200;
+const ASPECT_RATIO = BASE_WIDTH / BASE_HEIGHT;
 
 function setStatus(
   message: string,
@@ -45,8 +47,36 @@ function init(): void {
     return;
   }
 
-  const framebuffer = createFramebuffer(CANVAS_WIDTH, CANVAS_HEIGHT);
+  let framebuffer = createFramebuffer(BASE_WIDTH, BASE_HEIGHT);
   let scene = createScene();
+
+  // Calculate canvas dimensions based on displayed size
+  function getCanvasDimensions(): { width: number; height: number } {
+    const displayedWidth = canvas.clientWidth;
+    const width = Math.max(MIN_WIDTH, Math.min(BASE_WIDTH, displayedWidth));
+    const height = Math.round(width / ASPECT_RATIO);
+    return { width, height };
+  }
+
+  // Update canvas and framebuffer dimensions
+  function updateCanvasSize(): void {
+    const { width, height } = getCanvasDimensions();
+
+    if (canvas.width !== width || canvas.height !== height) {
+      canvas.width = width;
+      canvas.height = height;
+      framebuffer = createFramebuffer(width, height);
+    }
+  }
+
+  // Set initial size
+  updateCanvasSize();
+
+  // Observe canvas size changes
+  const resizeObserver = new ResizeObserver(() => {
+    updateCanvasSize();
+  });
+  resizeObserver.observe(canvas);
 
   // Set up input handling for camera controls
   const { cleanup: cleanupInput } = createInputHandler(canvas, {
@@ -143,6 +173,7 @@ function init(): void {
   window.addEventListener('unload', () => {
     loop.stop();
     cleanupInput();
+    resizeObserver.disconnect();
   });
 }
 

@@ -92,3 +92,44 @@ resizeObserver.observe(canvas);
 - Verify 3D rendering still works correctly at different sizes
 - Verify aspect ratio is maintained during resize
 - Verify no visual glitches during resize (debouncing)
+
+---
+
+## Implementation Notes
+
+### Changes Made
+
+**`src/style.css` (lines 43-49)**:
+- Added `max-width: 100%` to `.renderer canvas` so canvas visually shrinks with viewport
+- Added `height: auto` to maintain aspect ratio visually
+
+**`src/main.ts` (lines 17-20)**:
+- Changed `CANVAS_WIDTH`/`CANVAS_HEIGHT` to `BASE_WIDTH`/`BASE_HEIGHT` (800x600)
+- Added `MIN_WIDTH = 200` constant to prevent rendering at tiny sizes
+- Added `ASPECT_RATIO` constant calculated from base dimensions
+
+**`src/main.ts` (lines 50-79)**:
+- Made `framebuffer` mutable with `let` instead of `const`
+- Added `getCanvasDimensions()` function that:
+  - Reads the canvas's displayed width via `clientWidth`
+  - Clamps to `[MIN_WIDTH, BASE_WIDTH]` range
+  - Calculates height to maintain 4:3 aspect ratio
+- Added `updateCanvasSize()` function that:
+  - Updates canvas `width`/`height` attributes when displayed size changes
+  - Recreates framebuffer with new dimensions
+- Added `ResizeObserver` to monitor canvas and call `updateCanvasSize()` on changes
+
+**`src/main.ts` (line 176)**:
+- Added `resizeObserver.disconnect()` to cleanup on page unload
+
+### Test Results
+
+All existing tests pass:
+- 197 unit tests passed
+- 30 integration tests passed
+- 10 e2e tests passed
+
+Manual verification required:
+- Resize browser window below 800px and verify canvas shrinks proportionally
+- Verify 3D rendering continues to work at smaller sizes
+- Verify aspect ratio remains 4:3 during resize
