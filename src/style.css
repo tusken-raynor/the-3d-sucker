@@ -44,6 +44,8 @@ body {
   border: 2px solid var(--color-primary);
   border-radius: 4px;
   background-color: #000;
+  max-width: 100%;
+  height: auto;
 }
 
 .controls {

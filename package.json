@@ -16,7 +16,8 @@
     "lint": "eslint src --ext .ts",
     "format": "prettier --write src",
     "format:check": "prettier --check src",
-    "validate": "npm run format:check && npm run lint && npm run type-check && npm run test"
+    "validate": "npm run format:check && npm run lint && npm run type-check && npm run test",
+    "build:easy": "vite build"
   },
   "devDependencies": {
     "@eslint/js": "^9.39.2",
