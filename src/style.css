@@ -18,7 +18,7 @@ body {
     system-ui,
     -apple-system,
     sans-serif;
-  background: linear-gradient(64deg, var(--color-bg), #3e3e3e);
+  background: var(--color-bg);
   color: var(--color-text);
   min-height: 100vh;
   display: flex;
