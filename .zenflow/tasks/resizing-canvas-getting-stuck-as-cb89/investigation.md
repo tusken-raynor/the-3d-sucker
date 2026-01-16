@@ -112,10 +112,11 @@ resizeObserver.observe(wrapper);  // Observe wrapper, not canvas
 ## Test Plan
 
 Add a regression test that:
-1. Starts at 500px viewport width
-2. Expands to 1000px viewport width
-3. Verifies canvas width increases (should be 800px or close to it)
-4. Verifies aspect ratio is maintained
+1. Starts at 1000px viewport width (canvas should be ~800px)
+2. Shrinks to 500px viewport width (canvas shrinks accordingly)
+3. Expands back to 1000px viewport width
+4. Verifies canvas width increases back to ~800px (the bug was it stayed small)
+5. Verifies aspect ratio is maintained (4:3)
 
 ---
 
