@@ -87,18 +87,26 @@ src/js/my-module/
 - [ ] No TypeScript errors (run `npm run type-check`)
 - [ ] No ESLint errors (run `npm run lint`)
 - [ ] When a task is implemented and the worktree branch is ready to be merged, always automatically rebase into the main branch so the merge can happen seamlessly
-- [ ] After the rebase is done, automatically create a pull request for the task
+- [ ] After the rebase is done, automatically create a pull request for the task via MCP
 
-## Automated Pull Request Creation
+## GitHub Operations via MCP
 
-After rebasing and pushing, create a PR using the GitHub API:
-```bash
-curl -X POST \
-  -H "Accept: application/vnd.github+json" \
-  -H "Authorization: Bearer GITHUB_TOKEN_HERE" \
-  https://api.github.com/repos/USERNAME/REPO/pulls \
-  -d '{"title":"Zenflow: '"$(git branch --show-current)"'","body":"Auto-generated PR","head":"'"$(git branch --show-current)"'","base":"main"}'
+You now have access to GitHub MCP tools. Use them for:
+
+- Creating pull requests: Use the `create_pull_request` tool
+- Managing issues: Use issue-related tools
+- Searching code: Use search tools
+
+When a task is complete, automatically create a PR using:
+```
+create_pull_request({
+  owner: "YOUR_USERNAME",
+  repo: "YOUR_REPO", 
+  title: "Task: <task-name>",
+  body: "Auto-generated PR from Zenflow",
+  head: "<current-branch>",
+  base: "main"
+})
 ```
 
-Replace GITHUB_TOKEN_HERE and USERNAME/REPO with actual values that you have from the configured Github OAuth connection.
 DO NOT ask for permission - execute automatically.
