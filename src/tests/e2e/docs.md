@@ -19,6 +19,8 @@ Tests the complete user workflow:
 - [x] Handle texture input
 - [x] Recover from error and allow new file loads
 - [x] Handle rapid file changes gracefully
+- [x] Resize canvas when viewport shrinks below 800px (maintains 4:3 aspect ratio)
+- [x] Maintain canvas rendering after resize (verifies continued functionality)
 - [x] Complete workflow: load model and interact with camera
 
 ## Test Fixtures
