@@ -41,7 +41,7 @@ export function createInputHandler(
     state.lastX = e.clientX;
     state.lastY = e.clientY;
 
-    callbacks.onOrbit(deltaX * sensitivity, deltaY * sensitivity);
+    callbacks.onOrbit(-deltaX * sensitivity, deltaY * sensitivity);
   };
 
   const handleMouseUp = () => {
