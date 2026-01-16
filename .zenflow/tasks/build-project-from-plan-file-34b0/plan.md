@@ -61,14 +61,18 @@ Based on the technical specification, the implementation is divided into 9 phase
 
 ### Phase 1: Foundation & Math Primitives
 
-#### [ ] Step 1.1: Set up testing infrastructure
-- Install dev dependencies: `vitest`, `@vitest/coverage-v8`, `playwright`, `@playwright/test`, `prettier`
+#### [ ] Step 1.1: Set up testing infrastructure and test goals
+- Install dev dependencies: `vitest`, `@vitest/coverage-v8`, `playwright`, `@playwright/test`, `prettier`, `eslint`
 - Add test scripts to `package.json`:
   - `test`, `test:unit`, `test:integration`, `test:e2e`, `test:coverage`
-  - `type-check`, `format`, `format:check`, `validate`
+  - `type-check`, `lint`, `format`, `format:check`, `validate`
 - Create vitest config if needed
 - Create playwright config
-- **Verification**: `npm run test:unit` runs (even if no tests yet)
+- Create ESLint config for TypeScript
+- Create test directories and define test goals:
+  - `src/tests/integration/docs.md` with integration test goals
+  - `src/tests/e2e/docs.md` with E2E test goals
+- **Verification**: `npm run test:unit` runs (even if no tests yet), `npm run lint` runs
 
 #### [ ] Step 1.2: Configure path alias
 - Update `tsconfig.json` with `baseUrl` and `paths` for `@/*` alias
@@ -79,7 +83,7 @@ Based on the technical specification, the implementation is divided into 9 phase
 - Create `src/js/errors/index.ts` with:
   - `ErrorCode` enum (VALIDATION_ERROR, PARSE_ERROR, LOAD_ERROR, RENDER_ERROR, INTERNAL_ERROR)
   - `AppError` base class
-  - `ParseError`, `LoadError`, `RenderError` subclasses
+  - `ValidationError`, `ParseError`, `LoadError`, `RenderError` subclasses
 - Create `src/js/errors/index.test.ts` with unit tests
 - Create `src/js/errors/docs.md`
 - **Verification**: `npm run test:unit` passes
@@ -136,6 +140,8 @@ Based on the technical specification, the implementation is divided into 9 phase
   - Barycentric coordinate calculation
   - Perspective-correct interpolation for attributes
   - Back-face culling support
+  - Near-plane clipping (clip triangles intersecting the near plane)
+  - Viewport transform (NDC → screen coordinates)
   - Screen bounds clipping (scissoring)
 - Create `src/js/rasterizer/index.test.ts`
 - Create `src/js/rasterizer/docs.md`
@@ -221,6 +227,7 @@ Based on the technical specification, the implementation is divided into 9 phase
   - `Texture` interface (width, height, data)
   - `loadTexture(image)`: extract pixel data from HTMLImageElement
   - `sampleTexture(texture, u, v, wrapMode)`: nearest-neighbor sampling
+  - Note: Bilinear filtering is an optional future enhancement (not in MVP)
 - Create `src/js/texture-loader/index.test.ts`
 - Create `src/js/texture-loader/docs.md`
 - **Verification**: `npm run test:unit` passes
@@ -290,7 +297,7 @@ Based on the technical specification, the implementation is divided into 9 phase
 - **Verification**: Camera responds to mouse input
 
 #### [ ] Step 8.5: Integration tests
-- Create `src/tests/integration/docs.md` with test documentation
+- Update `src/tests/integration/docs.md`: replace test goals with actual test documentation
 - Create integration tests for file loading workflow
 - **Verification**: `npm run test:integration` passes
 
@@ -310,7 +317,7 @@ Based on the technical specification, the implementation is divided into 9 phase
 - **Verification**: Errors displayed clearly, app doesn't crash
 
 #### [ ] Step 9.3: E2E tests
-- Create `src/tests/e2e/docs.md` with test documentation
+- Update `src/tests/e2e/docs.md`: replace test goals with actual test documentation
 - Create E2E tests for complete user workflow:
   - Load model file
   - Load texture file
@@ -334,6 +341,7 @@ npm run validate
 
 Expected results:
 - Format check passes
+- Lint check passes
 - Type check passes
 - All unit tests pass
 - All integration tests pass
