@@ -1,32 +1,35 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>3D Model Viewer</title>
-  </head>
-  <body>
-    <div id="app">
-      <div class="renderer">
-        <div class="renderer__canvas-wrapper">
-          <canvas id="render-canvas" width="800" height="600"></canvas>
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Online 3D Model Viewer</title>
+</head>
+
+<body>
+  <div id="app">
+    <div class="renderer">
+      <div class="renderer__canvas-wrapper">
+        <canvas id="render-canvas" width="800" height="600"></canvas>
+      </div>
+      <div class="controls">
+        <div class="controls__file-inputs">
+          <label class="controls__file-input">
+            <input type="file" id="obj-input" accept=".obj" />
+            Load OBJ
+          </label>
+          <label class="controls__file-input">
+            <input type="file" id="texture-input" accept="image/*" />
+            Load Texture
+          </label>
         </div>
-        <div class="controls">
-          <div class="controls__file-inputs">
-            <label class="controls__file-input">
-              <input type="file" id="obj-input" accept=".obj" />
-              Load OBJ
-            </label>
-            <label class="controls__file-input">
-              <input type="file" id="texture-input" accept="image/*" />
-              Load Texture
-            </label>
-          </div>
-          <div class="controls__status" id="status"></div>
-        </div>
+        <div class="controls__status" id="status"></div>
       </div>
     </div>
-    <script type="module" src="/src/main.ts"></script>
-  </body>
+  </div>
+  <script type="module" src="/src/main.ts"></script>
+</body>
+
 </html>
