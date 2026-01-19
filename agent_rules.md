@@ -88,6 +88,7 @@ src/js/my-module/
 - [ ] No ESLint errors (run `npm run lint`)
 - [ ] When a task is implemented and the worktree branch is ready to be merged, always automatically rebase into the main branch so the merge can happen seamlessly
 - [ ] After the rebase is done, automatically create a pull request for the task via MCP
+- [ ] Once the pull request is created via MCP, use the ntfy MCP server to create a notification for what has been done, and link to the pull request on Github.com
 
 ## GitHub Operations via MCP
 
@@ -108,5 +109,20 @@ create_pull_request({
   base: "main"
 })
 ```
+
+DO NOT ask for permission - execute automatically.
+
+## PR Notification via ntfy
+
+After creating a PR via GitHub MCP:
+
+1. Use the ntfy MCP `send_ntfy` tool to send a notification:
+   - Title: "New PR: <PR title>"
+   - Message: "<PR description>"
+   - Priority: high
+   - Click URL: <PR URL>
+   - Tags: github, pull-request
+
+This will push a notification to my phone. When I tap it, it opens the GitHub PR.
 
 DO NOT ask for permission - execute automatically.
