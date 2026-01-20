@@ -84,7 +84,8 @@ Automatically create a pull request via GitHub MCP.
 
 ---
 
-### [ ] Step: Send Review Notification
+### [x] Step: Send Review Notification
+<!-- chat-id: 8d730c6e-8a14-44a8-9ac0-0ee45cbb5bc0 -->
 
 Send push notification via ntfy MCP server about the new PR.
 
