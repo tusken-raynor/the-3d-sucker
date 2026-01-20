@@ -119,7 +119,8 @@ Send push notification via ntfy MCP server about the new PR.
 
 ---
 
-### [ ] Step: Task Complete
+### [x] Step: Task Complete
+<!-- chat-id: 10398400-2a65-4492-b600-9d028d74090d -->
 
 Finalize the workflow and mark task as complete.
 
