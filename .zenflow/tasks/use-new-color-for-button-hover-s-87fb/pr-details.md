@@ -40,4 +40,10 @@ The two upload buttons in the application:
 
 ## Notification Status
 
-*Pending - will be updated after notification step*
+✅ **Notification sent successfully**
+
+- **Topic**: `chsprc-the-3d-sucker-sam`
+- **Service**: ntfy.sh
+- **Priority**: High
+- **Tags**: github, pull-request
+- **Action**: View PR button linked to PR URL
