@@ -86,8 +86,7 @@ src/js/my-module/
 - [ ] Test goals replaced with actual test documentation (if applicable)
 - [ ] No TypeScript errors (run `npm run type-check`)
 - [ ] No ESLint errors (run `npm run lint`)
-- [ ] When a task is implemented and the worktree branch is ready to be merged, always automatically rebase into the main branch so the merge can happen seamlessly
-- [ ] After the rebase is done, automatically create a pull request for the task via MCP
+- [ ] When a task is implemented and the worktree branch is ready to be merged, automatically create a pull request for the task via MCP
 - [ ] Once the pull request is created via MCP, use the ntfy MCP server to create a notification for what has been done, and link to the pull request on Github.com
 
 ## GitHub Operations via MCP
