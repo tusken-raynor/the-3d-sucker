@@ -8,9 +8,9 @@ Handles mouse input for camera controls. Provides drag detection for camera orbi
 
 ### Input Detection
 
-1. **Mouse drag**: Left mouse button down + move triggers orbit callbacks
-2. **Scroll wheel**: Wheel events trigger zoom callbacks
-3. **Release detection**: Mouseup or mouseleave stops dragging
+1. **Mouse drag**: Left mouse button down on canvas + move anywhere triggers orbit callbacks
+2. **Scroll wheel**: Wheel events on canvas trigger zoom callbacks
+3. **Release detection**: Mouseup anywhere stops dragging (tracked globally on document)
 
 ### Sensitivity
 
@@ -68,8 +68,10 @@ Unit tests cover:
 - Initial state creation
 - Drag start on left mouse button
 - Right click does not start drag
-- Drag stop on mouseup
-- Drag stop on mouseleave
+- Drag stop on mouseup (global)
+- Drag continues when mouse leaves element bounds
+- Mouse movement tracked on document during drag
+- Mouseup on document stops dragging
 - Orbit callback during drag
 - No orbit callback when not dragging
 - Delta calculation for orbit
@@ -77,4 +79,4 @@ Unit tests cover:
 - Zoom callback on wheel
 - Zoom sensitivity
 - State updates during drag
-- Event listener cleanup
+- Event listener cleanup (element and document listeners)

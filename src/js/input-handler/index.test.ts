@@ -84,11 +84,12 @@ describe('createInputHandler', () => {
     );
     expect(result.state.isDragging).toBe(true);
 
-    element.dispatchEvent(new MouseEvent('mouseup'));
+    // mouseup is now on document for global tracking
+    document.dispatchEvent(new MouseEvent('mouseup'));
     expect(result.state.isDragging).toBe(false);
   });
 
-  it('should stop dragging on mouseleave', () => {
+  it('should continue dragging when mouse leaves element bounds', () => {
     const result = createInputHandler(element, callbacks);
     cleanup = result.cleanup;
 
@@ -97,7 +98,41 @@ describe('createInputHandler', () => {
     );
     expect(result.state.isDragging).toBe(true);
 
+    // Mouse leaving element should NOT stop dragging
     element.dispatchEvent(new MouseEvent('mouseleave'));
+    expect(result.state.isDragging).toBe(true);
+  });
+
+  it('should track mouse movement on document during drag', () => {
+    const result = createInputHandler(element, callbacks, 1);
+    cleanup = result.cleanup;
+
+    // Start drag on element
+    element.dispatchEvent(
+      new MouseEvent('mousedown', { button: 0, clientX: 100, clientY: 100 })
+    );
+
+    // Simulate mouse move on document (outside element)
+    document.dispatchEvent(
+      new MouseEvent('mousemove', { clientX: 200, clientY: 150 })
+    );
+
+    expect(callbacks.onOrbit).toHaveBeenCalledWith(-100, 50);
+    expect(result.state.lastX).toBe(200);
+    expect(result.state.lastY).toBe(150);
+  });
+
+  it('should stop dragging when mouseup occurs on document', () => {
+    const result = createInputHandler(element, callbacks);
+    cleanup = result.cleanup;
+
+    element.dispatchEvent(
+      new MouseEvent('mousedown', { button: 0, clientX: 0, clientY: 0 })
+    );
+    expect(result.state.isDragging).toBe(true);
+
+    // Mouse up on document (outside element) should stop dragging
+    document.dispatchEvent(new MouseEvent('mouseup'));
     expect(result.state.isDragging).toBe(false);
   });
 
@@ -108,7 +143,8 @@ describe('createInputHandler', () => {
     element.dispatchEvent(
       new MouseEvent('mousedown', { button: 0, clientX: 100, clientY: 100 })
     );
-    element.dispatchEvent(
+    // mousemove is now on document for global tracking
+    document.dispatchEvent(
       new MouseEvent('mousemove', { clientX: 110, clientY: 120 })
     );
 
@@ -119,7 +155,8 @@ describe('createInputHandler', () => {
     const result = createInputHandler(element, callbacks);
     cleanup = result.cleanup;
 
-    element.dispatchEvent(
+    // mousemove is now on document
+    document.dispatchEvent(
       new MouseEvent('mousemove', { clientX: 110, clientY: 120 })
     );
 
@@ -133,7 +170,8 @@ describe('createInputHandler', () => {
     element.dispatchEvent(
       new MouseEvent('mousedown', { button: 0, clientX: 100, clientY: 100 })
     );
-    element.dispatchEvent(
+    // mousemove is now on document
+    document.dispatchEvent(
       new MouseEvent('mousemove', { clientX: 110, clientY: 120 })
     );
 
@@ -147,7 +185,8 @@ describe('createInputHandler', () => {
     element.dispatchEvent(
       new MouseEvent('mousedown', { button: 0, clientX: 100, clientY: 100 })
     );
-    element.dispatchEvent(
+    // mousemove is now on document
+    document.dispatchEvent(
       new MouseEvent('mousemove', { clientX: 200, clientY: 200 })
     );
 
@@ -181,7 +220,8 @@ describe('createInputHandler', () => {
     element.dispatchEvent(
       new MouseEvent('mousedown', { button: 0, clientX: 100, clientY: 100 })
     );
-    element.dispatchEvent(
+    // mousemove is now on document
+    document.dispatchEvent(
       new MouseEvent('mousemove', { clientX: 150, clientY: 180 })
     );
 
@@ -192,9 +232,13 @@ describe('createInputHandler', () => {
   it('should remove event listeners on cleanup', () => {
     const result = createInputHandler(element, callbacks);
 
-    const removeEventListenerSpy = vi.spyOn(element, 'removeEventListener');
+    const elementRemoveSpy = vi.spyOn(element, 'removeEventListener');
+    const documentRemoveSpy = vi.spyOn(document, 'removeEventListener');
     result.cleanup();
 
-    expect(removeEventListenerSpy).toHaveBeenCalledTimes(5);
+    // 2 listeners on element: mousedown, wheel
+    expect(elementRemoveSpy).toHaveBeenCalledTimes(2);
+    // 2 listeners on document: mousemove, mouseup
+    expect(documentRemoveSpy).toHaveBeenCalledTimes(2);
   });
 });

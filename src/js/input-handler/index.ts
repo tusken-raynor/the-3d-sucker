@@ -54,22 +54,19 @@ export function createInputHandler(
     callbacks.onZoom(e.deltaY * zoomSensitivity);
   };
 
-  const handleMouseLeave = () => {
-    state.isDragging = false;
-  };
-
+  // mousedown stays on element - drag only starts when clicking on the canvas
   element.addEventListener('mousedown', handleMouseDown);
-  element.addEventListener('mousemove', handleMouseMove);
-  element.addEventListener('mouseup', handleMouseUp);
+  // wheel stays on element - zoom only when scrolling over canvas
   element.addEventListener('wheel', handleWheel, { passive: false });
-  element.addEventListener('mouseleave', handleMouseLeave);
+  // mousemove and mouseup are on document for global tracking during drag
+  document.addEventListener('mousemove', handleMouseMove);
+  document.addEventListener('mouseup', handleMouseUp);
 
   const cleanup = () => {
     element.removeEventListener('mousedown', handleMouseDown);
-    element.removeEventListener('mousemove', handleMouseMove);
-    element.removeEventListener('mouseup', handleMouseUp);
     element.removeEventListener('wheel', handleWheel);
-    element.removeEventListener('mouseleave', handleMouseLeave);
+    document.removeEventListener('mousemove', handleMouseMove);
+    document.removeEventListener('mouseup', handleMouseUp);
   };
 
   return { state, cleanup };
